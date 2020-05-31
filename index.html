@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+   
+    <title>极速小网盘</title>
+    <style type="text/css">
+      @import "./js/layui-v2.5.6/layui/css/layui.css";
+    </style>
+    <style type="text/css">
+    /* body {
+    -webkit-app-region: drag;
+    }
+        section {
+        -webkit-app-region: no-drag
+    } */
+    .base_change{
+      cursor: move;
+      -webkit-app-region: drag;
+      background-color:rgba(0,0,0,0.03);
+      /* -webkit-app-region: no-drag; */
+    }
+    .layui-tab-card{
+      border-style: none  ;
+      width:100%;
+      height:651px;
+      overflow-x: hidden;
+    }
+    .ulStyle{
+      width: 1030px;
+      background-color: red;
+      justify-content: center;
+      margin: 0 auto;
+      line-height: 10px;
+      /* letter-spacing: 5px; */
+    }
+    .ulStyle li{
+      margin: 0 0 10px 10px;
+        width: 500px;
+        height: 500px;
+        float: left;
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgba(0,0,0,0.05);
+        box-shadow: 0 0 10px 1px rgba(0,0,0,0.5);
+    }
+    .ul_C{
+      width: 170px;
+      height: 500px;
+      background-color: rgba(0,0,0,0.01);
+      border-right-color:rgba(0,0,0,0.03);
+      border-right-width: 1px;
+      border-right-style: solid;
+      font-weight: bolder;
+      
+    }
+    .ul_C li{
+      width: 160px;
+      height: 35px;
+      margin:  20px auto;
+      position: relative;
+      text-align: center;
+      vertical-align: center;
+      line-height: 35px;
+      font-family: '宋体';
+    }
+    .ul_C li:hover{
+        transition: 0.1s;
+        background-color: rgba(0,111,100,0.1);
+        color: red;
+
+    }
+    .selected{
+      transition: 0.1s;
+        background-color: rgba(0,111,100,0.1);
+        color: red;
+    }
+    .right{
+      width: 840px;
+      height: 500px;
+      /* background-color: red; */
+      margin: -500px 0 0 180px;
+      border-top-style: solid;
+      border-top-width: 1px;
+      border-top-color: rgba(0,0,0,0.06);
+    }
+    .shadow{
+        box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
+    }
+    .beVip{
+      font-family: '幼圆';color: rgb(187,148,68);font-weight: bolder;text-shadow:0.3px 1px 1px rgba(187,148,68,0.1);
+    }
+    </style>
+  </head>
+  <script src="renderer.js"></script>
+  <script src="./js/layui-v2.5.6/layui/layui.js"></script>
+  <script src="./js/jquery_need.js"></script>
+  <body style="margin: 0;"oncut="return false;">
+   
+    <div class="layui-row">
+
+      <div style="height:10px;"></div>
+      <div class="layui-col-md11" style="font-family: '幼圆';font-weight: bolder;">
+        &nbsp;&nbsp;&nbsp;&nbsp;极速小网盘
+        <font class="base_change">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </font>
+      </div>
+      <div class="layui-col-md1">
+        &nbsp;&nbsp;&nbsp;
+        
+        
+        <i id="minSize" class="layui-icon layui-icon-subtraction" title="最小化窗口" style="font-size: 15px; color: greenyellow;"></i>  
+        &nbsp;
+        <!-- <i id="fullSize" class="layui-icon layui-icon-screen-full" title="全屏" style="font-size: 15px; color: #1E9FFF;"></i>   -->
+        &nbsp;
+        <i id="closeWindow" class="layui-icon layui-icon-close " title="关闭" style="font-size: 15px; color: red;"></i>  
+      </div>
+    </div>
+     
+    <div class="layui-tab layui-tab-card layui-tab-card">
+      <ul class="layui-tab-title">
+        <li class="layui-this">
+          
+          <i class="layui-icon layui-icon-home layui-anim layui-anim-upbit" title="最小化窗口" style="font-size: 15px; color: greenyellow;"></i>  
+          文件列表
+        </li>
+        <li>
+          
+          <i class="layui-icon layui-icon-chart-screen" title="最小化窗口" style="font-size: 15px; color: red;"></i>  
+          服务器状态</li>
+        <li>
+          <i class="layui-icon layui-icon-upload-drag" title="最小化窗口" style="font-size: 15px; color: red;"></i>  
+          
+          上传文件</li>
+        <li>
+          <i class="layui-icon layui-icon-download-circle" title="最小化窗口" style="font-size: 15px; color:cadetblue;"></i>  
+          
+          下载文件</li>
+        <li>
+          <i class="layui-icon  layui-icon-set-sm" title="最小化窗口" style="font-size: 15px; color: blue;"></i>  
+          个人设置
+        </li>
+        <li>
+          <i class="layui-icon  layui-icon-log" title="最小化窗口" style="font-size: 15px; color: blue;"></i>  
+          历史记录</li>
+        <li>
+          <i class="layui-icon  layui-icon-fonts-strong" title="最小化窗口" style="font-size: 15px; color: red;"></i>   
+          反馈bug</li>
+        <li>
+          <i class="layui-icon  layui-icon-engine" style="font-size: 15px; color: red;"></i>   
+          重新启动
+        </li>
+        <li>
+          <i class="layui-icon  layui-icon-face-surprised" style="font-size: 15px; color: green;"></i>   
+          软件相关
+        </li>
+      </ul>
+      <div class="layui-tab-content" style="height: 100px;">
+        <div class="layui-tab-item layui-show">
+          <div style="margin: auto;justify-content: center;display: flex;">
+            <i id="refresh" class="layui-icon layui-icon-refresh layui-anim layui-anim-scaleSpring" title="刷新" style="font-size: 20px; color: #1E9FFF;position: relative;top:8px;"></i>  
+            <label class="layui-form-label">文件编号</label>
+            <div class="layui-input-inline">
+              <input id="filescode" type="text" name="filescode" required lay-verify="required" placeholder="请输入文件编号" autocomplete="off" class="layui-input">
+            </div>
+      
+            <label class="layui-form-label">文件名称</label>
+            <div class="layui-input-inline">
+              <input id="filesname" type="text" name="filesname" required lay-verify="required" placeholder="请输入文件名称" autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label">上传作者</label>
+            <div class="layui-input-inline">
+              <input id="fileauthor" type="text" name="fileauthor" required lay-verify="required" placeholder="请输入上传作者" autocomplete="off" class="layui-input">
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="serach"  class="layui-btn layui-btn-primary">搜索</button>
+          </div>
+          <div style="margin: auto;justify-content: center;display: flex;">
+            <table id="demo" lay-filter="test" style="height: 512;"></table>
+          </div>
+          <h6 id="test" style="margin: 0;font-weight: normal;color:gray;font-size: 10px;position: relative;top: 15px;" align="center">CopyRight@CharLinHeng All Reserve</h6>
+        </div>
+        <div class="layui-tab-item">
+            <ul class="ulStyle" id="ulData">
+              <li>
+                <div style="width: 100%;height: 100%;" class="layui-anim layui-anim-up">
+                  <br>  <br>    
+                  <h3>
+                    &nbsp;
+                    <i class="layui-icon layui-icon-notice" style="color: red;"></i>
+                    服务器1
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="layui-badge-dot"></span>
+                    <font style="font-size: 10px;">
+                      连接中
+                    </font>
+                    &nbsp;&nbsp;
+                    <span class="layui-badge-dot layui-bg-green"></span>
+                    <font style="font-size: 10px;">
+                      OK/是
+                    </font>
+                    &nbsp;&nbsp;
+                    <span class="layui-badge-dot layui-bg-orange"></span>
+                    <font style="font-size: 10px;">
+                      不稳定
+                    </font>
+                    &nbsp;&nbsp;
+                    <span class="layui-badge-dot layui-bg-gray"></span>
+                    <font style="font-size: 10px;">
+                      无法提供服务/否
+                    </font>
+                  </h3>
+                    <div class="layui-row">
+                      
+                      <br>
+                    <table class="layui-table" lay-size="sm">
+                      <colgroup style="overflow-x: auto;">
+                        <col width="20">
+                        <col width="280">
+                        <col width="40">
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th>功能</th>
+                          <th>描述</th>
+                          <th>状态</th>
+                        </tr> 
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>实例-5b1c3*</td>
+                          <td>服务器名称,以及是否过期?</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>连接</td>
+                          <td>通信:发送连接请求至服务器</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>剩余磁盘</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>当前内存</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>当前CPU</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>当前会话数</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>消耗流量</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>带宽峰值</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>维护</td>
+                          <td> 连接中...</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>最快删除日期</td>
+                          <td>用户上传的文件在分享时间范围外后，系统会进行删除指定文件，并不保留在服务器。</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>已存文件数量</td>
+                          <td>用户上传的文件数量，并不包括已经删除的文件数量。</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>是否已经进入权限模式</td>
+                          <td>当开启权限模式之后，用户需要进行验证才能进行下载文件。</td>
+                          <td>
+                            <span class="layui-badge-dot"></span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                </div>
+              </li>
+            </ul>
+        </div>
+        <div class="layui-tab-item">
+       
+          <div class="layui-row">
+            <div class="layui-col-md3">
+              &nbsp;
+            </div>
+            <div class="layui-col-md3" style="line-height: 40px;">
+              <font id="tips_1" style="font-size: 10px;">
+                上传文件 - 第一步
+              </font>
+            </div>
+            <div class="layui-col-md3">
+              &nbsp;
+            </div>
+            <div class="layui-col-md3" style="justify-content: center;display:flex;margin: 0 auto;">
+              
+              <i  class="layui-icon layui-icon-release" style="font-size: 15px; color: red;position: relative;top: 10px;">
+                <font id="tips_2">
+                  步骤1/2
+                </font>
+                
+              </i>  
+              &nbsp;&nbsp;&nbsp;
+              <button id="reset" type="button" class="layui-btn layui-btn-primary" style="display: none;">重置</button>
+            </div>
+          </div>
+          <ul class="ul_C">
+            <li id="modu1"  class="selected layui-anim layui-anim-scaleSpring">
+              <i  class="layui-icon layui-icon-edit" style="font-size: 15px; color: green;"></i>  
+              上传设定</li>
+              <hr style="width: 60%;justify-content: center;display: flex;margin: 0 auto;">
+            <li id="modu2">
+              <i   class="layui-icon layui-icon-face-smile" style="font-size: 15px; color: green;"></i>  
+              正在上传</li>
+             
+            <li id="modu3">
+              <i class="layui-icon layui-icon-face-cry" style="font-size: 15px; color: orangered;"></i>  
+              
+              上传完成</li>
+          </ul>
+          <div id="moduleA_1" class="right">
+            <form class="layui-form" onsubmit="return false;">
+              <div class="layui-form-item">
+                <label class="layui-form-label">截止日期:</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" style="width: 200px;" id="date1">
+                    <div class="layui-form-mid layui-word-aux" style="font-size: 10px;">&nbsp;
+                      文件能够下载的有效日期
+                      <i class="layui-icon layui-icon-tips" style="font-size: 15px; color:red;"></i>  
+                      注意:文件分享的日期截止的范围在[当前时间+1天,当前时间 +7天]<br>&nbsp;&nbsp;也就是说,您最多只能分享7天的文件，7天之后文件将被服务器删除，提高服务器利用率。
+                    </div>
+                </div>
+                
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label" >文件加密:</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+                <button type="button" id="rand" name="rand" class="layui-btn layui-btn-primary">随机生成</button>
+                <div class="layui-form-mid layui-word-aux">不输入则意为不需要密码</div>
+              </div>
+              <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文件描述</label>
+                <div class="layui-input-block">
+                  <textarea name="desc" id="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+              </div>
+              
+              <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn" id="next" name="next">下一步</button>
+                </div>
+              </div>
+            </form>
+             
+          </div>
+          <div id="moduleA_2" class="right">
+            <div style="height: 25px;"></div>
+            <div class="layui-form" >
+              <div class="layui-form-item">
+                <label class="layui-form-label">文件名称:</label>
+                <div class="layui-input-inline">
+                  <input type="text" disabled id="sureUploadFileName" name="sureUploadFileName" style="width: 300px;" required lay-verify="required" placeholder="不需要您填写{请点击上传文件}" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux" style="position: relative;left:120px ;">展示待上传的文件名称</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">文件大小:</label>
+                <div class="layui-input-inline">
+                  <input type="text" disabled id="sureUploadFileSize" name="sureUploadFileSize" style="width: 300px;" required lay-verify="required" placeholder="不需要您填写" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux" style="position: relative;left:120px ;">展示待上传的文件大小,单个文件最大为700Mb.</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">文件类型:</label>
+                <div class="layui-input-inline">
+                  <input type="text" disabled id="sureUploadFileType" name="sureUploadFileType" style="width: 300px;" required lay-verify="required" placeholder="不需要您填写" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux" style="position: relative;left:120px ;">展示待上传的类型</div>
+              </div>
+              <div style="height: 0px;"></div>
+              <!-- <div style="width: 150px;height: 150px;justify-content: center;display: flex;margin: 0 auto;position: relative;top: -10px;border-style:dotted;border-width: 1px;border-color: gray;background-color: rgba(0,0,0,0.03);box-shadow: 0 0 10px 1px rgba(0,0,0,0.09);">
+                    <a style="position: relative;top: 60px;">拖拽文件到这</a>
+              </div> -->
+              <button type="button" class="layui-btn" style="width: 350px;height: 150px;justify-content: center;display: flex;margin: 0 auto;position: relative;top: -10px;border-style:dotted;border-width: 1px;border-color: gray;background-color: rgba(0,0,0,0.03);box-shadow: 0 0 10px 1px rgba(0,0,0,0.09);" id="uploadFile">
+                <i class="layui-icon" style="color: red;">&#xe67c;上传文件<br>
+                  <a style="font-size: 10px;">将文件拖拉到这儿或者点击</a></i>
+                
+              </button>
+              <br><br>
+              <button class="layui-btn" id="sureUpload" style="width: 200px;justify-content: center;display: flex;margin: 0 auto;display: none;"  name="sureUpload">确定上传</button>
+            </div>
+          </div>
+          <!-- 此区域为 正在上传的div -->
+          <div id="moduleB_1" name="moduleB_1" style="display: none;background-color: rgba(0,0,0,0.04);" class="right">
+            
+
+            <!--  -->
+            </div>
+          </div>
+          <!-- 此区域为 上传完成的div -->
+          <div id="moduleC_1" style="display: none;" class="right">
+
+          </div>
+        </div>
+        <div class="layui-tab-item">4</div>
+        <div class="layui-tab-item">5</div>
+        <div class="layui-tab-item">6</div>
+        <div class="layui-tab-item">7</div>
+        <div class="layui-tab-item">8</div>
+        <div class="layui-tab-item">9</div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>     
+  // 
+  document.body.onselectstart = document.body.ondrag = ()=>{ return false }
+  var ipc = require('electron').ipcRenderer;
+  var init = 0;     
+  var readyId; 
+  var errorCount = 0;
+  var currClassIndex = 1;
+  var currUploadNum = 0;
+  var fileControl = 0;
+  var pngArray = ['AI','ANI','ASF','AU','AVI','BAT','BIN','BMP','AIFF'
+  ,'BUP','DCR','DLL','CAB','CAL','CAT','CUR','DAT','DER','DIC','DOC','DOCX','DVD','DWG','DWT','FON','GIF','HLP'
+  ,'HST','HTML','ICO','JPG','MMF','IFO','INF','INI','JAVA','JIF','LOG','M4A','MMM','MOV','MP2','MP2V','MP3','MP4'
+  ,'MPEG','MSP','PDF','PNG','PPT','REG','RTF','TLB','PPTX','PSD','RA','RAR','THEME','TIFF','TTF','TXT','VOB','WAV','WMA'
+  ,'WMV','WPL','WRI','XLS','XLSX','XML','ZIP','XSL','AC3','EXE'];
+  layui.use('table', function(){
+    var table = layui.table;
+    //第一个实例
+    table.render({
+      elem: '#demo'
+      ,height: 512
+      ,url: 'http://springboottest.51vip.biz/data/fileData' //数据接口
+      ,page: true //开启分页
+      // ,width:1300
+      ,method:'post'
+      ,request: {
+        pageName: 'pageNum' //页码的参数名称，默认：page
+        ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+      }
+
+      ,response: {
+        // statusName: 'status' //规定数据状态的字段名称，默认：code
+        statusCode: 0 //规定成功的状态码，默认：0
+        // ,msgName: 'hint' //规定状态信息的字段名称，默认：msg
+        ,countName: 'count' //规定数据总数的字段名称，默认：count
+        ,pageName: 'pageNum' //页码的参数名称，默认：page
+        ,limitName: 'pageSize'
+        ,dataName: 'list' //规定数据列表的字段名称，默认：data
+      } 
+      ,cols: [[ //表头
+        {field: 'id', title: '编号', width:120, sort: true, fixed: 'right'}
+        ,{field: 'filename', title: '文件名称', sort:true,width:160,fixed:'right'}
+        ,{field: 'fileSize', title: '大小', width:80}
+        ,{field: 'descrpition', title: '描述', width:80} 
+        ,{field: 'uploadTime', title: '上传时间', width: 160}
+        ,{field: 'expireTime', title: '过期时间', width: 160}
+        ,{field: 'downloadCount', title: '下载数', width: 80}
+        ,{field: 'password', title: '密码', width: 60}
+        ,{field: 'author', title: '上传人', width: 105}
+        ,{field: 'download', title: '下载', width: 58}
+      ]]
+      ,done: function(res, curr, count){
+        //如果是异步请求数据方式，res即为你接口返回的信息。
+        //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+        console.log(res);
+        
+        //得到当前页码
+        console.log(curr); 
+
+        //得到数据总量
+        console.log(count);
+        if(count > 0 && init == 0){
+          // init = 1;
+          // layui.use('layer', function(){
+          //   var layer = layui.layer;
+            
+          //   layer.msg('加载文件列表成功!');
+          // }); 
+        }
+      }
+    });
+    
+  });
+
+      document.getElementById('closeWindow').addEventListener('click', () => {
+        ipc.send('window-close');
+      })
+      document.getElementById('minSize').addEventListener('click', () => {
+        ipc.send('window-min');
+      })
+      document.getElementById('refresh').addEventListener('click', () => {
+          //刷新
+        var table = layui.table;
+        table.reload('demo', {
+          url: 'http://springboottest.51vip.biz/data/fileData' //数据接口
+          ,where: {}
+        });
+        document.getElementById('refresh').classList.remove("layui-anim-scaleSpring");
+        document.getElementById('refresh').classList.remove("layui-anim");
+        document.getElementById('refresh').classList.add("layui-anim");
+        document.getElementById('refresh').classList.add("layui-anim-scaleSpring");
+      })
+      document.getElementById('serach').addEventListener('click', () => {
+        var table = layui.table;
+        //先获取值
+        var fileCode = document.getElementById("filescode").value;
+        var filesname = document.getElementById("filesname").value;
+        var fileauthor = document.getElementById("fileauthor").value;
+        //请求
+        // alert(fileCode+ ","+filesname+" ,"+fileauthor);
+        table.reload('demo', {
+          url: 'http://springboottest.51vip.biz/data/fileData' //数据接口
+          ,where: {
+                'id':fileCode
+                ,'filename':filesname
+                ,'author':fileauthor
+                ,'pageNum':1
+          } //设定异步数据接口的额外参数
+          // ,height: 300
+        });
+      })
+      function gotoDownloadThis(ojb){
+        //判断，如果是N0，那么直接放行。。。
+        // if(ojb.indexOf("F1")!=-1){
+        //   //干正事,进行下载
+
+        //     return ;
+        // }  
+        //否则 必须 进行秘密
+        if(errorCount > 30){
+          layer.msg('密码超过三十次，请30分钟再试');
+
+          return 0;
+        }
+        if(ojb.indexOf("N0") != -1){
+          layer.msg('开始下载!!');
+          return ;
+        }
+        layer.prompt({
+            formType: 3,
+            title: '请输入密码:',
+            area: ['800px', '350px'] //自定义文本域宽高
+          },function(value, index, elem){
+            if(errorCount > 30){
+                layer.msg('密码超过三十次，请30分钟再试');
+
+                return 0;
+              }
+          //发起后台异步请求..判断密码是否正确.
+          if(window.XMLHttpRequest){
+              var formDatas = new FormData();
+              //赋予密码
+              formDatas.append("passWord",value);
+              formDatas.append("id",ojb);
+              var request = new XMLHttpRequest();
+              request.onreadystatechange=function(){
+                if(request.readyState==4&&request.status==200){
+                  tips_=request.responseText;
+                  if(tips_.split("msg")[0].indexOf("0") != -1){
+                    layer.closeAll(); //疯狂模式，关闭所有层
+                    layer.msg('验证成功!!开始下载..');
+                  }
+                  else{
+                    layer.msg('密码错误！');
+                    errorCount ++;
+                    if(errorCount > 30){
+                      layer.msg('密码错误超过三0次');
+
+                    }
+                  }
+                }
+            };
+            request.open("POST",'http://springboottest.51vip.biz/data/judgePassWord',true);
+            request.send(formDatas);
+            }
+        });  
+                  
+          
+      }
+      //切换tab 调用不同的方法
+      layui.use('element', function(){
+          var $ = jQuery = layui.jquery;
+          var element = layui.element;
+      
+          $('.layui-tab-title').on('click', function(title) {
+              if(title.toElement.textContent.indexOf("服务器状态")!= -1){
+                  //发送请求,获取状态
+                  // document.getElementById("ulData").innerHTML="dasda";
+                  if(window.XMLHttpRequest){
+              var request = new XMLHttpRequest();
+              request.onreadystatechange=function(){
+                if(request.readyState==4&&request.status==200){
+                  tips_=request.responseText;
+                  //给他
+                  $("#ulData").empty();
+                  $("#ulData").append(tips_);
+                }
+            };
+            request.open("POST",'http://springboottest.51vip.biz/data/connect',true);
+            request.send();
+            }
+              }
+              
+          });
+      });
+      //文件上传
+      layui.use('upload', function(){
+          var upload = layui.upload; //得到 upload 对象
+          //创建一个上传组件
+          upload.render({
+            elem: '#uploadfile'
+            ,url: ''
+            ,done: function(res, index, upload){ //上传后的回调
+            
+            } 
+            ,accept: 'file' //允许上传的文件类型
+            //,size: 50 //最大允许上传的文件大小
+            //,……
+          })
+          
+        } );
+        //日期
+        layui.use('laydate', function(){
+          var laydate = layui.laydate;
+          
+          //执行一个laydate实例
+          laydate.render({
+            elem: '#date1' //指定元素
+            ,type: 'datetime'
+            // ,range: true //或 range: '~' 来自定义分割字符
+            ,value: new Date((new Date()).getTime()+86400*1000)
+            ,min: 1
+            ,max: 7
+          });
+        });
+
+        // 范围随机数
+ 	function random(max,min){
+        return Math.round(Math.random()*(max-min)+min);
+    }
+    function randomStr(){  //封装，以便日后使用。
+       //创建一个空字符，用于存放随机数/字母
+        var strData = "";
+		//生成随机字符库 (验证码四位，随机数三种，取公倍数12,所以循环4次。也可以是120次，1200次。)
+        for(var i=0;i<4;i++){
+            var num = random(0,9);//生成0-9的随机数
+            var az = String.fromCharCode(random(97,122));//生成a-z
+            var AZ = String.fromCharCode(random(65,90));//生成A-Z
+
+            strData = strData + num + az + AZ;//将生成的字符进行字符串拼接
+           
+        }
+        // 开始真正的随机(从随机字符库中随机取出四个)
+        var str = "";
+        for(var i=0;i<4;i++){
+            str += strData[random(0,strData.length-1)]
+        }
+        // console.log(str)
+        return str;
+    }
+    document.getElementById('rand').addEventListener('click', () => {
+      var str = randomStr();
+      document.getElementById("password").value = str;
+      // $("#password").html(str);
+    });
+    document.getElementById('next').addEventListener('click', () => {
+      layer.load();
+      //获取日期
+      var date = document.getElementById("date1").value;
+      //获取是否有密码
+      var pass = document.getElementById("password").value;
+      //获取描述
+      var desc = document.getElementById("desc").value;
+      //判断密码描述
+      if(pass.length > 6){
+        layer.msg("密码不能长于6个字符");
+        return ;
+      }
+      // alert(date+","+pass+","+desc);
+      var formData = new FormData();
+      formData.append("date",date);
+      formData.append("password",pass);
+      formData.append("desc",desc);
+      formData.append("author","网友");
+      //先去服务器创建
+      if(window.XMLHttpRequest){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange=function(){
+          if(request.readyState==4&&request.status==200){
+            tips_=request.responseText;
+            var msg_tip;
+            if(tips_.split("msg")[0].indexOf("0") != -1){
+              // alert(tips_);
+              readyId = tips_.split("\",\"filename")[0].split("id\":\"")[1];
+              layer.closeAll();
+              document.getElementById("tips_1").innerHTML = '就绪成功!<i class="layui-icon layui-icon-rss" style="font-size: 15px; color: #1E9FFF;"></i>  队列编号:'+readyId;
+              document.getElementById("tips_2").innerHTML = "步骤2/2";
+              document.getElementById("reset").style.display="block";
+              document.getElementById("moduleA_1").style.display="none";
+              document.getElementById("moduleA_2").style.display="block";
+              // layer.msg('');
+            }
+            else{
+              msg_tip = tips_.split("\",\"data\":")[0].split("msg\":\"")[1];
+              layer.msg(msg_tip);
+            }
+          }
+      };
+      request.open("POST",'http://springboottest.51vip.biz/data/createUpload',true);
+      request.send(formData);
+      }
+    });
+    document.getElementById("moduleA_2").style.display="none";
+    document.getElementById('reset').addEventListener('click', () => {
+      document.getElementById("moduleA_1").style.display="block";
+      document.getElementById("moduleA_2").style.display="none";
+      document.getElementById("reset").style.display="none";
+      document.getElementById("tips_1").innerHTML = "上传文件 - 第一步";
+      document.getElementById("tips_2").innerHTML = "步骤1/2";
+    });
+
+    layui.use('element', function(){
+        var element = layui.element;
+        var $ = layui.jquery;
+    layui.use('upload', function(){
+      var upload = layui.upload;
+      var thisProgress;
+      var fileName_up;
+      var come = 0;
+      var ulNew;
+      // element.render('progress', 'demo1'); //对 lay-filter="test1" 所在导航重新渲染。注：layui 2.1.6 版本新增
+      //执行实例
+      var uploadInst = upload.render({
+        elem: '#uploadFile' //绑定元素
+        ,url: 'http://springboottest.51vip.biz/data/upLoadFile' //上传接口
+        ,accept: 'file' //允许上传的文件类型
+        ,size: 716800 //最大允许上传的文件大小
+        ,auto:false
+        ,bindAction:'#sureUpload'
+        // ,multiple:'true'
+        ,drag:true
+        ,data:{
+           
+          }
+        ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+          //这里需要调整
+          this.data = { 'id': readyId };
+          obj.preview(function(index, file, result){
+            //点击了确定上传之后，页面需要跳转
+            //文件名
+            fileName_up = file.name;
+            //编号
+            var idCode = readyId;
+            //类型
+            var length = file.name.split(".");
+            var type = document.getElementById("sureUploadFileType").value = length[length.length-1];
+            //截至日期
+            var date = document.getElementById("date1").value;
+            //大小
+            var fileSize_ = getFileSize(file.size);
+            //密码
+            var passWORD = document.getElementById("password").value;
+            //png
+            var type_UPper = type.toUpperCase();
+            var arrayIndex = -1;
+            arrayIndex = pngArray.indexOf(type_UPper)+1;
+            if(arrayIndex == 0){
+              arrayIndex = 73;
+            }
+            thisProgress = currUploadNum + 1;
+            //创建ul
+            ulNew = '<div id="task'+(currUploadNum+1)+'" class="layui-card shadow"><div class="layui-card-header"><a style="font-family: \'幼圆\';color: rgb(187,148,68);font-weight: bolder;text-shadow:0.3px 1px 1px rgba(187,148,68,0.1);">'+fileName_up+'</a></div><div class="layui-card-body" ><div style="width: 35px;height: 50px;"><img src="./image/'+arrayIndex+'.png" style="width: 100%;height:100%;" alt=""></div><div style="width: 740px;height: 50px;margin: -50px 0 0 45px;"><table class="layui-table"  lay-size="sm" style="position: relative;margin:0;top: -8px;" ><colgroup><col width="80"><col width="140"><col width="140"><col width="80"></colgroup><tbody><tr><td><i class="layui-icon layui-icon-password beVip"style="font-size: 15px; color: #1E9FFF;"></i>密码:<a class="beVip">'+passWORD+'</a><i class="layui-icon layui-icon-export beVip" id="copy'+(currUploadNum+1)+'" title="复制" data-value="'+passWORD+'" style="font-size: 15px;cursor: pointer;"></i></td><td><i class="layui-icon layui-icon-date beVip"style="font-size: 15px; color: #1E9FFF;"title="达到该日期之后文件自动删除"></i>截止:<a class="beVip">'+date+'</a></td><td><i class="layui-icon layui-icon-key beVip"style="font-size: 15px; color: #1E9FFF;"title="达到该日期之后文件自动删除"></i>编号:<a class="beVip">'+idCode+'</a></td><td><i class="layui-icon layui-icon-component beVip"style="font-size: 15px; color: #1E9FFF;"title="达到该日期之后文件自动删除"></i>大小:<a class="beVip"style="color: black;">'+fileSize_+'</a></td></tr><tr><td><i class="layui-icon layui-icon-template-1 beVip"style="font-size: 15px; color: #1E9FFF;"></i>类型:<a class="beVip">'+type+'</a></td><td colspan="2"><div class="layui-progress layui-progress-big"lay-showpercent="true"lay-filter="demo'+(currUploadNum+1)+'"><div class="layui-progress-bar layui-bg-red" lay-percent="100%"></div></div></div></td><td><button id="openFile'+(currUploadNum+1)+'" type="button"class="layui-btn layui-btn-sm layui-btn-primary layui-btn layui-btn-xs"><i class="layui-icon layui-icon-file beVip"style="font-size: 15px;cursor: pointer;"title="打开文件夹"></i></button><button type="button"class="layui-btn layui-btn-sm layui-btn-primary layui-btn layui-btn-xs"  id="delete'+(currUploadNum+1)+'" style="position: relative;left: -10px;"><i class="layui-icon layui-icon-delete" title="删除"></i></button></td></tr></tbody></table></div></div>';
+            var div = document.createElement("div");
+            div.innerHTML = ulNew;
+            document.getElementById("moduleB_1").appendChild(div);
+            currUploadNum ++;
+            //跳转至这里
+            if(document.getElementById('modu2').classList.contains("selected")){
+                return ;
+              }
+              document.getElementById('modu'+currClassIndex).classList.remove("selected");
+              document.getElementById("moduleB_1").style.display="block";
+              
+              document.getElementById("moduleA_1").style.display="none";
+              document.getElementById("moduleA_2").style.display="none";
+              document.getElementById("moduleC_1").style.display="none";
+              currClassIndex = 2;
+              document.getElementById('modu'+currClassIndex).classList.add("selected");
+              document.getElementById("tips_1").innerHTML = "正在上传的文件数量:"+currUploadNum+"。注意!文件列表不会在服务器保存...";
+              document.getElementById("tips_2").innerHTML = "";
+            
+            //请求ID
+
+
+          });
+        }              
+        ,done: function(res){
+          //上传完毕回调
+          element.progress('demo'+thisProgress,'100%');
+          layer.msg(fileName_up+"上传成功!");
+          fileControl = 0;
+          var div = document.createElement("div");
+            div.innerHTML = ulNew;
+            document.getElementById("moduleC_1").appendChild(div);
+            come = 0;
+            layui.element.init();
+
+        }
+        ,error: function(){
+          //请求异常回调
+          // layer.msg("上传异常，请检查网络或者查看服务器是否正常.");
+        }
+        ,choose: function(obj){
+          layer.load(); //上传loading
+          obj.preview(function(index, file, result){
+            
+            document.getElementById("sureUploadFileName").value = file.name;
+            // layer.msg(document.getElementById("sureUploadFileName").value);
+            document.getElementById("sureUploadFileSize").value = getFileSize(file.size);
+            var length = file.name.split(".");
+            document.getElementById("sureUploadFileType").value = length[length.length-1];
+            layer.closeAll();
+            document.getElementById("sureUpload").style.display =  "block";
+            //控制，此时不能再添加
+            fileControl = 1;
+          });
+        }
+        ,progress: function(n, elem){
+              if(come == 0){
+                layui.element.init();
+                come ++;
+              }
+              var percent = n + '%' //获取进度百分比
+              // $('#demo1').attr('lay-percent',percent);
+             
+              element.progress('demo'+thisProgress, percent);
+              
+          // });
+              
+            
+        }
+      });
+    });
+  });    
+
+    function getFileSize(fileByte) {
+      var fileSizeByte = fileByte;
+      var fileSizeMsg = "";
+      if (fileSizeByte < 1048576) fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";
+      else if (fileSizeByte == 1048576) fileSizeMsg = "1MB";
+      else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) + "MB";
+      else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) fileSizeMsg = "1GB";
+      else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + "GB";
+      else fileSizeMsg = "文件超过1TB";
+      return fileSizeMsg;
+  }
+    //替换方法
+
+    
+    document.getElementById('modu1').addEventListener('click', () => {
+      if(fileControl == 1){
+          layer.msg("一次只能上传一个文件!您有文件正在上传中...");
+        return ;
+      }
+      if(document.getElementById('modu1').classList.contains("selected")){
+        return ;
+      }
+      document.getElementById('modu'+currClassIndex).classList.remove("selected");
+      document.getElementById("moduleA_1").style.display="block";
+      document.getElementById("moduleA_2").style.display="none";
+      document.getElementById("moduleB_1").style.display="none";
+      document.getElementById("moduleC_1").style.display="none";
+      currClassIndex = 1;
+      document.getElementById('modu'+currClassIndex).classList.add("selected");
+      document.getElementById("tips_1").innerHTML = "上传文件 - 第一步";
+      document.getElementById("tips_2").innerHTML = "步骤1/2";
+      //隐藏div，和显示div
+      
+    });
+    document.getElementById('modu2').addEventListener('click', () => {
+      if(document.getElementById('modu2').classList.contains("selected")){
+        return ;
+      }
+      document.getElementById('modu'+currClassIndex).classList.remove("selected");
+      document.getElementById("moduleB_1").style.display="block";
+      
+      document.getElementById("moduleA_1").style.display="none";
+      document.getElementById("moduleA_2").style.display="none";
+      document.getElementById("moduleC_1").style.display="none";
+      currClassIndex = 2;
+      document.getElementById('modu'+currClassIndex).classList.add("selected");
+      document.getElementById("tips_1").innerHTML = "正在上传的文件数量:"+currUploadNum+"。注意!文件列表不会在服务器保存...";
+      document.getElementById("tips_2").innerHTML = "";
+    })
+    document.getElementById('modu3').addEventListener('click', () => {
+      if(document.getElementById('modu3').classList.contains("selected")){
+        return ;
+      }
+      document.getElementById('modu'+currClassIndex).classList.remove("selected");
+      document.getElementById("moduleC_1").style.display="block";
+      document.getElementById("moduleB_1").style.display="none";
+      document.getElementById("moduleA_1").style.display="none";
+      document.getElementById("moduleA_2").style.display="none";
+      currClassIndex = 3;
+      document.getElementById('modu'+currClassIndex).classList.add("selected");
+      document.getElementById("tips_1").innerHTML = "上传完成的文件数量: ";
+      document.getElementById("tips_2").innerHTML = "";
+    });
+    // document.getElementById('img1').addEventListener('click', () => {
+      
+    // });
+    // document.getElementById('img1').src="./image/10.png";
+    // document.getElementById('copy').addEventListener('click',() =>{
+      
+    //   layui.use('element', function(){
+    //     alert("????");
+    //     var $ = layui.jquery
+    //       ,element = layui.element;
+    //         // $('#percent1').attr('lay-percent','30%');
+    //         layui.element.init();
+    //   });
+    //   layer.msg("复制成功!");
+    // });
+   
+    //在这里可以先获取数据库数据 - 正在上传...
+
+    
+    //
+  </script>
